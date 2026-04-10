@@ -4,17 +4,30 @@ import logging
 
 app = Flask(__name__)
 
+# Logging setup
 logging.basicConfig(filename="app.log", level=logging.INFO)
 
+# Load model
 model = pickle.load(open("model.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
 # Store last 5 predictions
 history = []
 
+def get_counts():
+    spam_count = sum(1 for item in history if item["result"] == "Spam")
+    ham_count = sum(1 for item in history if item["result"] == "Not Spam")
+    return spam_count, ham_count
+
 @app.route("/")
 def home():
-    return render_template("index.html", history=history)
+    spam_count, ham_count = get_counts()
+    return render_template(
+        "index.html",
+        history=history,
+        spam_count=spam_count,
+        ham_count=ham_count
+    )
 
 @app.route("/predict_form", methods=["POST"])
 def predict_form():
@@ -36,14 +49,19 @@ def predict_form():
     })
     history = history[:5]
 
+    # Logging
     logging.info(f"{message} | {result} | {probability:.2f}")
+
+    spam_count, ham_count = get_counts()
 
     return render_template(
         "index.html",
         prediction=result,
         prob=round(probability * 100, 2),
         message=message,
-        history=history
+        history=history,
+        spam_count=spam_count,
+        ham_count=ham_count
     )
 
 if __name__ == "__main__":
