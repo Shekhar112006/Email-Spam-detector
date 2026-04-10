@@ -10,15 +10,37 @@ body {
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #1e3a8a, #0f172a);
     color: white;
-    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FIXED DASHBOARD SIZE */
+.wrapper {
+    width: 1600px;
+    height: 900px;
+    transform-origin: top left;
+}
+
+/* AUTO SCALE */
+@media (max-width: 1600px) {
+    .wrapper {
+        transform: scale(calc(100vw / 1600));
+    }
+}
+@media (max-height: 900px) {
+    .wrapper {
+        transform: scale(calc(100vh / 900));
+    }
 }
 
 /* NAVBAR */
 .navbar {
-    height: 60px;
+    height: 50px;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 15px;
 }
 
 .navbar h2 {
@@ -26,6 +48,7 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    font-size: 20px;
 }
 
 /* GRID */
@@ -33,63 +56,66 @@ body {
     display: grid;
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto 1fr;
-    gap: 15px;
-    padding: 15px;
-    height: calc(100vh - 60px);
+    gap: 10px;
+    padding: 10px;
+    height: calc(100% - 50px);
 }
 
 /* CARD */
 .card {
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
-    padding: 15px;
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: 10px;
     box-shadow: 
-        0 0 20px rgba(59,130,246,0.3),
-        0 0 40px rgba(34,197,94,0.1);
+        0 0 15px rgba(59,130,246,0.3),
+        0 0 30px rgba(34,197,94,0.1);
     transition: 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 /* KPI */
 .kpi {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .kpi .card {
     flex: 1;
     text-align: center;
+    font-size: 14px;
 }
 
 /* INPUT */
 textarea {
     width: 100%;
-    height: 70px;
-    border-radius: 10px;
+    height: 60px;
+    border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.2);
-    padding: 10px;
+    padding: 8px;
     background: rgba(255,255,255,0.1);
     color: white;
+    font-size: 13px;
 }
 
 /* BUTTON */
 button {
-    margin-top: 10px;
-    padding: 8px 15px;
+    margin-top: 8px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background: linear-gradient(45deg, #22c55e, #4ade80);
     color: white;
     cursor: pointer;
+    font-size: 13px;
 }
 
 /* CHART */
 .chart {
-    height: 180px;
+    height: 150px;
 }
 
 /* COLORS */
@@ -99,16 +125,18 @@ button {
 /* TABLE */
 table {
     width: 100%;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 td {
-    padding: 5px;
+    padding: 4px;
 }
 </style>
 </head>
 
 <body>
+
+<div class="wrapper">
 
 <div class="navbar">
     <h2>🛡 SpamShield AI Dashboard</h2>
@@ -116,7 +144,7 @@ td {
 
 <div class="container">
 
-<!-- LEFT SIDE -->
+<!-- LEFT -->
 <div>
 
     <!-- KPI -->
@@ -156,7 +184,7 @@ td {
 
 </div>
 
-<!-- RIGHT SIDE -->
+<!-- RIGHT -->
 <div>
 
     <!-- PIE -->
@@ -189,14 +217,15 @@ td {
 </div>
 
 </div>
+</div>
 
 <script>
-// DATA
+// GET DATA
 const dataDiv = document.getElementById("data");
 let spam = parseInt(dataDiv.getAttribute("data-spam")) || 0;
 let ham = parseInt(dataDiv.getAttribute("data-ham")) || 0;
 
-// PIE
+// PIE CHART
 new Chart(document.getElementById("pieChart"), {
     type: "doughnut",
     data: {
@@ -215,7 +244,7 @@ new Chart(document.getElementById("pieChart"), {
     }
 });
 
-// LINE
+// LINE CHART
 new Chart(document.getElementById("lineChart"), {
     type: "line",
     data: {
