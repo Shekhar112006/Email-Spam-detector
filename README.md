@@ -3,7 +3,7 @@
 ## Problem
 Classify messages as spam or not spam.
 
-## 🛠 Tech Stack
+##  Tech Stack
 - Python
 - Scikit-learn
 - Flask
