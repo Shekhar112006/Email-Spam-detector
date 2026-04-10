@@ -5,152 +5,142 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #1e3a8a, #0f172a);
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: white;
 }
 
-/* FIXED SIZE */
-.wrapper {
+/* MAIN FRAME */
+.dashboard {
     width: 1600px;
     height: 900px;
-    transform-origin: top left;
+    padding: 15px;
+    display: grid;
+    grid-template-rows: 50px 1fr;
 }
 
-/* AUTO SCALE */
-@media (max-width: 1600px) {
-    .wrapper {
-        transform: scale(calc(100vw / 1600));
-    }
-}
-@media (max-height: 900px) {
-    .wrapper {
-        transform: scale(calc(100vh / 900));
-    }
-}
-
-/* NAVBAR */
-.navbar {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-}
-
-.navbar h2 {
-    background: linear-gradient(90deg, #60a5fa, #4ade80);
+/* HEADER */
+.header {
+    font-size: 22px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #38bdf8, #22c55e);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-size: 20px;
 }
 
 /* GRID */
-.container {
+.grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 10px;
-    padding: 10px;
-    height: calc(100% - 50px);
+    gap: 12px;
+}
+
+/* LEFT + RIGHT */
+.left, .right {
+    display: grid;
+    gap: 12px;
+}
+
+/* LEFT SECTIONS */
+.left {
+    grid-template-rows: 80px 180px 1fr;
+}
+
+/* RIGHT SECTIONS */
+.right {
+    grid-template-rows: 160px 1fr;
 }
 
 /* CARD */
 .card {
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
     border-radius: 12px;
-    padding: 10px;
-    box-shadow: 
-        0 0 15px rgba(59,130,246,0.3),
-        0 0 30px rgba(34,197,94,0.1);
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
 }
 
 /* KPI */
 .kpi {
     display: flex;
-    gap: 8px;
+    gap: 10px;
 }
 
 .kpi .card {
     flex: 1;
     text-align: center;
-    font-size: 14px;
 }
 
 /* INPUT */
 textarea {
     width: 100%;
-    height: 60px;
+    height: 70px;
     border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: none;
     padding: 8px;
     background: rgba(255,255,255,0.1);
     color: white;
-    font-size: 13px;
 }
 
 /* BUTTON */
 button {
     margin-top: 8px;
     padding: 6px 12px;
-    border: none;
     border-radius: 6px;
+    border: none;
     background: linear-gradient(45deg, #22c55e, #4ade80);
     color: white;
     cursor: pointer;
-    font-size: 13px;
 }
 
-/* SMALLER CHART */
-.chart {
-    height: 80px;
+/* CHART SIZE */
+canvas {
+    height: 100px !important;
 }
 
-/* CONTROL CARD HEIGHT */
-.chart-card {
-    height: 140px;
+/* HISTORY */
+.history {
+    overflow: hidden;
 }
 
-/* HISTORY FIT */
-.history-card {
-    height: 200px;
-    overflow-y: auto;
+.history table {
+    width: 100%;
+    font-size: 12px;
+}
+
+.history td {
+    padding: 5px;
 }
 
 /* COLORS */
 .spam { color: #ef4444; }
 .ham { color: #22c55e; }
 
-/* TABLE */
-table {
-    width: 100%;
-    font-size: 11px;
-}
-
-td {
-    padding: 4px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="dashboard">
 
-<div class="navbar">
-    <h2>🛡 SpamShield AI Dashboard</h2>
-</div>
+<!-- HEADER -->
+<div class="header">🛡 SpamShield AI Dashboard</div>
 
-<div class="container">
+<div class="grid">
 
 <!-- LEFT -->
-<div>
+<div class="left">
 
     <!-- KPI -->
     <div class="kpi">
@@ -162,32 +152,31 @@ td {
     <!-- SCANNER -->
     <div class="card">
         <h3>Email Scanner</h3>
-
         <form method="POST">
-            <textarea name="message" placeholder="Paste email here..."></textarea>
-            <button type="submit">Scan</button>
+            <textarea name="message" placeholder="Paste email..."></textarea>
+            <button>Scan</button>
         </form>
 
         {% if prediction %}
-            <h3 class="{{ 'spam' if prediction=='Spam' else 'ham' }}">
-                {{ prediction }} ({{ prob }}%)
-            </h3>
+        <h3 class="{{ 'spam' if prediction=='Spam' else 'ham' }}">
+            {{ prediction }} ({{ prob }}%)
+        </h3>
         {% endif %}
     </div>
 
     <!-- LINE CHART -->
-    <div class="card chart-card">
+    <div class="card">
         <h3>Detection Trend</h3>
-        <canvas id="lineChart" class="chart"></canvas>
+        <canvas id="lineChart"></canvas>
     </div>
 
 </div>
 
 <!-- RIGHT -->
-<div>
+<div class="right">
 
     <!-- PIE -->
-    <div class="card chart-card">
+    <div class="card">
         <h3>Spam Distribution</h3>
 
         <div id="data"
@@ -195,16 +184,16 @@ td {
              data-ham="{{ ham_count }}">
         </div>
 
-        <canvas id="pieChart" class="chart"></canvas>
+        <canvas id="pieChart"></canvas>
     </div>
 
     <!-- HISTORY -->
-    <div class="card history-card">
+    <div class="card history">
         <h3>Recent Activity</h3>
         <table>
             {% for item in history %}
             <tr>
-                <td>{{ item.text[:20] }}...</td>
+                <td>{{ item.text[:25] }}...</td>
                 <td class="{{ 'spam' if item.result=='Spam' else 'ham' }}">
                     {{ item.result }}
                 </td>
@@ -219,7 +208,6 @@ td {
 </div>
 
 <script>
-// DATA
 const dataDiv = document.getElementById("data");
 let spam = parseInt(dataDiv.getAttribute("data-spam")) || 0;
 let ham = parseInt(dataDiv.getAttribute("data-ham")) || 0;
@@ -233,11 +221,6 @@ new Chart(document.getElementById("pieChart"), {
             data: [spam, ham],
             backgroundColor: ["#ef4444", "#22c55e"]
         }]
-    },
-    options: {
-        plugins: {
-            legend: { labels: { color: "white" } }
-        }
     }
 });
 
@@ -247,21 +230,11 @@ new Chart(document.getElementById("lineChart"), {
     data: {
         labels: ["Mon","Tue","Wed","Thu","Fri"],
         datasets: [{
-            label: "Emails",
             data: [12, 19, 10, 15, 20],
-            borderColor: "#60a5fa",
-            backgroundColor: "rgba(96,165,250,0.2)",
+            borderColor: "#38bdf8",
+            backgroundColor: "rgba(56,189,248,0.2)",
             fill: true
         }]
-    },
-    options: {
-        plugins: {
-            legend: { labels: { color: "white" } }
-        },
-        scales: {
-            x: { ticks: { color: "white" } },
-            y: { ticks: { color: "white" } }
-        }
     }
 });
 </script>
