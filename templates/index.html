@@ -1,66 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Spam Detector</title>
+    <title>AI Spam Detector</title>
 
-    <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
-            background: linear-gradient(to right, #667eea, #764ba2);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: linear-gradient(to right, #141e30, #243b55);
+            color: white;
+        }
+
+        .container-box {
+            margin-top: 80px;
         }
 
         .card {
-            border-radius: 15px;
-            padding: 30px;
-            width: 400px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 25px;
         }
 
-        .title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
+        .quote {
+            font-style: italic;
+            font-size: 14px;
+            opacity: 0.8;
         }
 
-        .result {
-            text-align: center;
-            font-size: 20px;
-            margin-top: 20px;
-            font-weight: bold;
+        .feature-box {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="card bg-white">
-    <h2 class="title">📧 Spam Detector</h2>
+<div class="container container-box">
+    <div class="row">
 
-    <form action="/predict_form" method="post">
-        <div class="mb-3">
-            <input type="text" name="message" class="form-control" placeholder="Enter your message..." required>
+        <!-- LEFT SIDE (App) -->
+        <div class="col-md-6">
+            <div class="card bg-light text-dark">
+
+                <h3 class="text-center">📧 AI Spam Detector</h3>
+
+                <p class="text-center text-muted">
+                    Detect spam messages instantly using Machine Learning
+                </p>
+
+                <form action="/predict_form" method="post">
+                    <input type="text" name="message" class="form-control mb-3"
+                        placeholder="Enter your message..." required>
+
+                    <button class="btn btn-primary w-100">Analyze</button>
+                </form>
+
+                {% if prediction %}
+                    <div class="mt-4 text-center">
+
+                        <h4>
+                            {% if prediction == "Spam" %}
+                                <span class="text-danger">🚫 Spam</span>
+                            {% else %}
+                                <span class="text-success">✅ Not Spam</span>
+                            {% endif %}
+                        </h4>
+
+                        <p>Confidence: <b>{{ prob }}%</b></p>
+
+                        <p class="quote">
+                            "{{ message }}"
+                        </p>
+
+                    </div>
+                {% endif %}
+
+            </div>
         </div>
 
-        <div class="d-grid">
-            <button class="btn btn-primary">Check Message</button>
-        </div>
-    </form>
+        <!-- RIGHT SIDE (Features + Quotes) -->
+        <div class="col-md-6">
 
-    {% if prediction is not none %}
-        <div class="result">
-            {% if prediction == "Spam" %}
-                <span class="text-danger">🚫 Spam Message</span>
-            {% else %}
-                <span class="text-success">✅ Not Spam</span>
-            {% endif %}
+            <h4>✨ Features</h4>
+
+            <div class="feature-box">⚡ Fast Prediction</div>
+            <div class="feature-box">🤖 Machine Learning Powered</div>
+            <div class="feature-box">📊 Probability Score</div>
+            <div class="feature-box">🌐 API Ready</div>
+
+            <hr>
+
+            <h5>💡 Quote</h5>
+
+            <p class="quote">
+                "Data is the new oil, and AI is the engine."
+            </p>
+
+            <p class="quote">
+                "Turning raw text into intelligent decisions."
+            </p>
+
         </div>
-    {% endif %}
+
+    </div>
 </div>
 
 </body>
